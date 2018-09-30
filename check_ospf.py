@@ -3,6 +3,8 @@ import subprocess
 import paramiko
 
 def ssh_command(host, command):
+    """SSH to a host and run a command. Returns json command output
+    """
     try:
         client = paramiko.SSHClient()
         client.load_system_host_keys()
@@ -17,6 +19,7 @@ def ssh_command(host, command):
         client.close()
 
 def run_command(command):
+    """Run a single command on the localhost"""
 
     # Run the command
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE,
@@ -30,6 +33,8 @@ def run_command(command):
     return json.loads(stdout)
 
 def get_ospf_interfaces(host):
+    """Get the list of OSPF enabled interfaces from a given host
+    """
     command = "net show ospf interface json"
 
     output = ssh_command(host, command)
