@@ -11,7 +11,7 @@ def ssh_command(host, command):
         client.connect(host, port=22, username="cumulus", password="CumulusLinux!")
 
         stdin, stdout, stderr = client.exec_command(command)
-        print stdout.read(),
+        return json.loads(stdout.read())
 
     finally:
         client.close()
@@ -28,6 +28,17 @@ def run_command(command):
         exit(1)
 
     return json.loads(stdout)
+
+def get_ospf_interfaces(host):
+    command = "net show ospf interface json"
+
+    output = ssh_command(host, command)
+
+    if "interfaces" not in output:
+        print 'Error'
+        exit(1)
+    else:
+        return output["interfaces"].keys()
 
 def check_link_status():
     pass
@@ -49,5 +60,3 @@ def check_expected_spf():
 
 def check_ospf_calc():
     pass
-
-ssh_command("leaf01", "net show ospf neighbor")
