@@ -93,13 +93,16 @@ def get_topology():
 def check_link_status(hostname):
     """ Traverse every port and return if ok on all port
     """
+    print "Checking link status..."
     _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
     for _remote_port in _json_all_port:
         _correct = _correct and (_json_all_port[_remote_port]['linkstate'] == 'UP')
         if _json_all_port[_remote_port]['linkstate'] != 'UP':
-            print("Link failed on " + hostname +
+            print_error("Link failed on " + hostname +
                   + "with remote port : " + _remote_port + "\n")
+    if _correct:
+        print_green("...Link status passed")
     return _correct
 
 def check_mtu(host_dict):
