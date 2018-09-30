@@ -1,4 +1,5 @@
 #!/bin/bash
 
-{% for interface in node[inventory_hostname]["ospf"] %}
+{%- for interface in node[inventory_hostname]["ospf"] %}
 /sbin/ip link set dev {{interface}} mtu 1500
+{%- endfor %}
