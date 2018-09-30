@@ -32,7 +32,7 @@
     mode: 0754
     backup: yes
     # notify: break mtu
-    tags:
-      - break_mtu
+  tags:
+    - break_mtu
 
 
