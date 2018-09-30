@@ -10,7 +10,6 @@ def print_error(error_string):
     bold_format = "\033[1m"
     endc = '\033[0m'
     print error_format + bold_format + error_string + endc
-    exit(1)
 
 def print_green(output_string):
     """Print a string in green
