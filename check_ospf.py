@@ -71,21 +71,17 @@ def get_topology():
 
     return hostnames
 
-def check_link_status():
+def check_link_status(hostname):
     """ Traverse every port and return if ok on all port
     """
-    _json_all_port = run_command("net show interface json")
+    _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
     for _port in _json_all_port:
         _correct = _correct and (_json_all_port[_port]['linkstate'] == 'UP')
     return _correct
 
-def check_mtu():
-    host_dict = dict()
-    hostnames = get_topology()
-    for host in hostnames:
-        host_dict[host] = {"interfaces": dict()}
-
+def check_mtu(host_dict):
+    print "Checking MTU...."
     for host in host_dict.keys():
         for interface in get_lldp_neighbors(host)["lldp"][0]["interface"]:
             # print "local host: " + host
@@ -118,16 +114,14 @@ def check_mtu():
             remote_mtu = ssh_command(remote_host, "net show interface " + remote_port + " json")["iface_obj"]["mtu"]
 
             if not remote_mtu == my_mtu:
+                print "...MTU check failed"
                 print "MTU mismatch on " + host + ":" + interface + \
                     "(" + str(my_mtu) + ") and " + remote_host + \
                       ":" + remote_port + "(" + str(remote_mtu) + ")"
                 return False
 
-    print "MTU check passed"
+    print "...MTU check passed"
     return True
-
-def check_lldp():
-    pass
 
 def check_ospf_state():
     interfaces = run_command("net show interface json")
@@ -139,13 +133,28 @@ def check_ospf_state():
                     if interface_name in neighbor_data['ifaceName']:
                         print "Interface %s OSPF state is %s" % (interface_name, neighbor_data['state'])
 
-def check_routes():
+
+def check_network_type():
+    ifc_info = run_command("net show ospf interface json")
+
+    for (k, v) in ifc_info.items():
+        for (ifc, ifc_v) in v.items():
+            for(attr, attr_v) in ifc_v.items():
+                if(ifc != "lo" and attr == "networkType"):
+                    print("ifc: "+ ifc + " Key: " + attr +  " Value:" + str(attr_v))
+                    if(attr_v != "POINTOPOINT"):
+                        print("False")
+                    else:
+                        print ("True")
     pass
 
-def check_expected_spf():
-    pass
 
-def check_ospf_calc():
-    pass
+host_dict = dict()
+hostnames = get_topology()
+for host in hostnames:
+    host_dict[host] = {"interfaces": dict()}
+    check_link_status(host)
 
-print check_mtu()
+check_mtu(host_dict)
+
+print "All Checks Pass"
