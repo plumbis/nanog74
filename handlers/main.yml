@@ -1,0 +1,24 @@
+---
+- name: restart frr
+  service:
+    name: frr
+    state: restarted
+
+- name: reload frr
+  service:
+    name: frr
+    state: reloaded
+
+- name: reload networking
+  command: "ifreload -a"
+
+- name: restart LLDP
+  service:
+    name: lldpd
+    state: restarted
+
+- name: apply networking
+  command: /sbin/shutdown -r +1
+  async: 0
+  poll: 0
+  ignore_errors: true

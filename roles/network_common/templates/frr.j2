@@ -1,0 +1,27 @@
+frr version 4.0+cl3u3
+frr defaults datacenter
+hostname leaf01
+username cumulus nopassword
+!
+service integrated-vtysh-config
+!
+log syslog informational
+!
+interface lo
+ ip ospf area 0.0.0.0
+!
+{% for interface in ansible_hostname["ospf"] %}
+interface {{ interface }}
+ ip ospf area 0.0.0.0
+ ip ospf network point-to-point
+{% endfor %}
+!
+router ospf
+ ospf router-id {{ ansible_hostname["interfaces"]["lo"]}}
+ passive-interface default
+ {% for interface in ansible_hostname["ospf"] %}
+ no passive-interface {{ interface }}
+ {% endfor %}
+!
+line vty
+!

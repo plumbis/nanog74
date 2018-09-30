@@ -1,0 +1,9 @@
+---
+- hosts: spines, leafs
+  become: yes
+  gather_facts: no
+  tasks:
+  roles:
+    - network_common
+  handlers:
+    - include: handlers/main.yml

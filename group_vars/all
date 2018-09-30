@@ -1,0 +1,46 @@
+node:
+  leaf01:
+    ospf:
+      - swp51
+      - swp52
+    interfaces:
+      lo: 10.0.0.1/32
+
+  leaf02:
+    ospf:
+      - swp51
+      - swp52
+    interfaces:
+      lo: 10.0.0.2/32
+
+  leaf03:
+    ospf:
+      - swp51
+      - swp52
+    interfaces:
+      lo: 10.0.0.3/32
+
+  leaf04:
+    ospf:
+      - swp51
+      - swp52
+    interfaces:
+      lo: 10.0.0.4/32
+
+  spine01:
+    ospf:
+      - swp1
+      - swp2
+      - swp3
+      - swp4
+    interfaces:
+      lo: 10.1.1.11/32
+      
+  spine02:
+    ospf:
+      - swp1
+      - swp2
+      - swp3
+      - swp4
+    interfaces:
+      lo: 10.2.2.22/32
