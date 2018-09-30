@@ -140,7 +140,7 @@ def check_mtu(host_dict):
                 print_error("MTU mismatch on " + host + ":" + interface + \
                     "(" + str(my_mtu) + ") and " + remote_host + \
                       ":" + remote_port + "(" + str(remote_mtu) + ")")
-                exit(1)
+                return False
 
     print_green("...MTU check passed")
     return True
@@ -195,3 +195,5 @@ if not check_mtu(host_dict):
 print ""
 if all_passed:
     print_green("All Checks Pass")
+else:
+    exit(1)
