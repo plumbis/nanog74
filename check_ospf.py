@@ -58,6 +58,18 @@ def get_lldp_neighbors(host):
     else:
         return output
 
+def get_topology():
+    """Opens an ansible host file and returns the hostnames
+    """
+    file_object  = open("ansible.hosts", "r")
+    hostnames = []
+    for line in file_object.readlines():
+        if line.find("[") >= 0 or len(line.strip()) == 0:
+            continue
+        hostnames.append(line.strip())
+
+    return hostnames
+
 def check_link_status():
     pass
 
@@ -78,3 +90,6 @@ def check_expected_spf():
 
 def check_ospf_calc():
     pass
+
+
+print get_topology()
