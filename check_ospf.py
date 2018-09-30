@@ -187,10 +187,9 @@ def check_ospf_routerid(hostnames):
     for id in _unique_id:
         if len(_unique_id[id]) > 1:
             _correct = False
-            print("Repetitive Unique ID :" + id + "with host name :" )
+            print_error("Repetitive Unique ID : " + id + "with host name : " )
             for id_host in _unique_id[id]:
-                print(id_host)
-            print ("\n")
+                print_error(id_host)
 
     return _correct
 
