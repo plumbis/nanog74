@@ -16,8 +16,12 @@ def run_command(command):
     return json.loads(stdout)
 
 def check_link_status():
+    _json_all_port = run_command("net show interface json")
+    _correct = True
+    for _port in _json_all_port:
+        _correct = _correct and (_port["linkstate"] == 'UP')
+    return _correct
 
-    pass
 
 def check_mtu():
     pass
