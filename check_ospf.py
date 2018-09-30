@@ -2,6 +2,24 @@ import json
 import subprocess
 import paramiko
 
+def print_error(error_string):
+    """Format and print error messages.
+    Also exit the program
+    """
+    error_format = "\033[91m"
+    bold_format = "\033[1m"
+    endc = '\033[0m'
+    print error_format + bold_format + error_string + endc
+    exit(1)
+
+
+def print_green(output_string):
+    """Print a string in green
+    """
+    green_format = "\033[92m"
+    print green_format + output_string
+
+
 def ssh_command(host, command):
     """SSH to a host and run a command. Returns json command output
     """
@@ -114,13 +132,13 @@ def check_mtu(host_dict):
             remote_mtu = ssh_command(remote_host, "net show interface " + remote_port + " json")["iface_obj"]["mtu"]
 
             if not remote_mtu == my_mtu:
-                print "...MTU check failed"
-                print "MTU mismatch on " + host + ":" + interface + \
+                print_error("...MTU check failed")
+                print_error("MTU mismatch on " + host + ":" + interface + \
                     "(" + str(my_mtu) + ") and " + remote_host + \
-                      ":" + remote_port + "(" + str(remote_mtu) + ")"
-                return False
+                      ":" + remote_port + "(" + str(remote_mtu) + ")")
+                exit(1)
 
-    print "...MTU check passed"
+    print_green("...MTU check passed")
     return True
 
 def check_ospf_state():
@@ -157,4 +175,4 @@ for host in hostnames:
 
 check_mtu(host_dict)
 
-print "All Checks Pass"
+print_green("All Checks Pass")
