@@ -10,16 +10,16 @@ log syslog informational
 interface lo
  ip ospf area 0.0.0.0
 !
-{% for interface in ansible_hostname["ospf"] %}
+{% for interface in node[inventory_hostname]["ospf"] %}
 interface {{ interface }}
  ip ospf area 0.0.0.0
  ip ospf network point-to-point
 {% endfor %}
 !
 router ospf
- ospf router-id {{ ansible_hostname["interfaces"]["lo"]}}
+ ospf router-id {{ node[inventory_hostname]["interfaces"]["lo"]}}
  passive-interface default
- {% for interface in ansible_hostname["ospf"] %}
+ {% for interface in node[inventory_hostname]["ospf"] %}
  no passive-interface {{ interface }}
  {% endfor %}
 !
