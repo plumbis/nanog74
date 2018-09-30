@@ -92,4 +92,6 @@ def check_ospf_calc():
     pass
 
 
-print get_topology()
+hostnames = get_topology()
+for host in hostnames:
+    check_link_status()
