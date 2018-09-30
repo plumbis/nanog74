@@ -71,10 +71,12 @@ def get_topology():
     return hostnames
 
 def check_link_status():
+    """ Traverse every port and return if ok on all port
+    """
     _json_all_port = run_command("net show interface json")
     _correct = True
     for _port in _json_all_port:
-        _correct = _correct and (_port["linkstate"] == 'UP')
+        _correct = _correct and (_json_all_port[_port]['linkstate'] == 'UP')
     return _correct
 
 def check_mtu():
