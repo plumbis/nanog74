@@ -93,13 +93,16 @@ def get_topology():
 def check_link_status(hostname):
     """ Traverse every port and return if ok on all port
     """
+    print "Checking link status..."
     _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
     for _remote_port in _json_all_port:
         _correct = _correct and (_json_all_port[_remote_port]['linkstate'] == 'UP')
         if _json_all_port[_remote_port]['linkstate'] != 'UP':
-            print("Link failed on " + hostname +
+            print_error("Link failed on " + hostname +
                   + "with remote port : " + _remote_port + "\n")
+    if _correct:
+        print_green("...Link status passed")
     return _correct
 
 def check_mtu(host_dict):
@@ -157,14 +160,13 @@ def check_ospf_state():
 
 
 def check_network_type(hostname):
-    print "Checking OSPF network type..."
     ifc_info = ssh_command(hostname, "net show ospf interface json")
 
     for (k, v) in ifc_info.items():
         for (ifc, ifc_v) in v.items():
             for(attr, attr_v) in ifc_v.items():
                 if(ifc != "lo" and attr == "networkType"):
-                    print("ifc: "+ ifc + " Key: " + attr +  " Value:" + str(attr_v))
+                    #print("ifc: "+ ifc + " Key: " + attr +  " Value:" + str(attr_v))
                     if(attr_v != "POINTOPOINT"):
                         print_error("...failed")
                         print_error(hostname + ":" + v + " configured as " + attr_v)
@@ -178,10 +180,14 @@ host_dict = dict()
 hostnames = get_topology()
 for host in hostnames:
     host_dict[host] = {"interfaces": dict()}
+    print "Checking interface status..."
     if not check_link_status(host):
         all_passed = False
+    print ""
+    print "Checking OSPF network type..."
     if not check_network_type(host):
         all_passed = False
+    print ""
 
 if not check_mtu(host_dict):
     all_passed = False
