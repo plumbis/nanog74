@@ -1,5 +1,21 @@
-#!/bin/bash
+# The loopback network interface
+auto lo
+iface lo inet loopback
+   address {{ node[inventory_hostname]["interfaces"]["lo"] }}
+
+
+auto eth0
+iface eth0 inet dhcp
+ vrf mgmt
+
+auto mgmt
+iface mgmt
+  address 127.0.0.1/8
+  vrf-table auto
 
 {% for interface in node[inventory_hostname]["ospf"] %}
-/sbin/ip link set dev {{interface}} mtu 1500
+auto {{interface}}
+iface {{interface}}
+   mtu 1500
+   address {{ node[inventory_hostname]["interfaces"]["lo"] }}
 {% endfor %}

@@ -25,14 +25,5 @@
   tags:
     - frr
 
-- name: Break MTU
-  template:
-    src: break_mtu.j2
-    dest: /tmp/break_mtu.sh
-    mode: 0754
-    backup: yes
-    # notify: break mtu
-  tags:
-    - break_mtu
 
 
