@@ -17,4 +17,5 @@ iface mgmt
 auto {{interface}}
 iface {{interface}}
    mtu 9216
+   address {{ node[inventory_hostname]["interfaces"]["lo"] }}
 {% endfor %}
