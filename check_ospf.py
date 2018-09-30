@@ -2,19 +2,37 @@ import json
 import subprocess
 
 
+def run_command(command):
 
-my_command = ["net", "show", "ospf", "neighbor", "json"]
+    # Run the command
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
 
-# Run the command
-process = subprocess.Popen(my_command, stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
+    # Get the output from the OS
+    stdout, stderr = process.communicate()
+    if stderr:
+        exit(1)
 
-# Get the output from the OS
-stdout, stderr = process.communicate()
-if stderr:
-    exit(1)
+    return json.loads(stdout)
 
-json_output = json.loads(stdout)
-# We expect JSON output starting with {, if that isn't there, something's wrong.
-print "Our Output is:"
-print json_output["neighbors"]
+def check_link_status():
+
+    pass
+
+def check_mtu():
+    pass
+
+def check_lldp():
+    pass
+
+def check_ospf_state():
+    pass
+
+def check_routes():
+    pass
+
+def check_expected_spf():
+    pass
+
+def check_ospf_calc():
+    pass
