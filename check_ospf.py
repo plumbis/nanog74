@@ -93,7 +93,6 @@ def get_topology():
 def check_link_status(hostname):
     """ Traverse every port and return if ok on all port
     """
-    print "Checking link status..."
     _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
     for _remote_port in _json_all_port:
