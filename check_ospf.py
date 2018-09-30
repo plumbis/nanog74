@@ -10,7 +10,6 @@ def print_error(error_string):
     bold_format = "\033[1m"
     endc = '\033[0m'
     print error_format + bold_format + error_string + endc
-    exit(1)
 
 def print_green(output_string):
     """Print a string in green
@@ -140,7 +139,7 @@ def check_mtu(host_dict):
                 print_error("MTU mismatch on " + host + ":" + interface + \
                     "(" + str(my_mtu) + ") and " + remote_host + \
                       ":" + remote_port + "(" + str(remote_mtu) + ")")
-                exit(1)
+                return False
 
     print_green("...MTU check passed")
     return True
@@ -221,3 +220,5 @@ if not check_mtu(host_dict):
 print ""
 if all_passed:
     print_green("All Checks Pass")
+else:
+    exit(1)
