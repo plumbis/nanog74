@@ -45,6 +45,19 @@ def get_ospf_interfaces(host):
     else:
         return output["interfaces"].keys()
 
+def get_lldp_neighbors(host):
+    """Get a list of the lldp peers that are connected
+    """
+    command = "net show lldp json"
+
+    output = ssh_command(host, command)
+
+    if "lldp" not in output:
+        print "Error"
+        exit(1)
+    else:
+        return output
+
 def check_link_status():
     pass
 
