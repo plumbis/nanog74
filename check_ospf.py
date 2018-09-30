@@ -86,7 +86,14 @@ def check_lldp():
     pass
 
 def check_ospf_state():
-    pass
+    interfaces = run_command("net show interface json")
+    for interface_name, interface_data in interfaces.iteritems():
+        if interface_data['mode'] == 'Interface/L3' and 'swp' in interface_name:
+            ospf_state = run_command("net show ospf neighbor json")
+            for neighbor_ip, neighbors in ospf_state['neighbors'].iteritems():
+                for neighbor_data in neighbors:
+                    if interface_name in neighbor_data['ifaceName']:
+                        print "Interface %s OSPF state is %s" % (interface_name, neighbor_data['state'])
 
 def check_routes():
     pass
