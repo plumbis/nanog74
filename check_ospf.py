@@ -83,7 +83,7 @@ def check_mtu():
 def check_lldp():
     pass
 
-def check_ospf_state(link_status):
+def check_ospf_state():
     interfaces = run_command("net show interface json")
     for interface_name, interface_data in interfaces.iteritems():
         if interface_data['mode'] == 'Interface/L3' and 'swp' in interface_name:
