@@ -95,8 +95,11 @@ def check_link_status(hostname):
     """
     _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
-    for _port in _json_all_port:
-        _correct = _correct and (_json_all_port[_port]['linkstate'] == 'UP')
+    for _remote_port in _json_all_port:
+        _correct = _correct and (_json_all_port[_remote_port]['linkstate'] == 'UP')
+        if _json_all_port[_remote_port]['linkstate'] != 'UP':
+            print("Link failed on " + hostname +
+                  + "with remote port : " + _remote_port + "\n")
     return _correct
 
 def check_mtu(host_dict):
