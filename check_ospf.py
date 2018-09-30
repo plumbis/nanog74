@@ -14,7 +14,8 @@ def ssh_command(host, command):
 
         stdin, stdout, stderr = client.exec_command(command)
         return json.loads(stdout.read())
-
+    except:
+        print "Could not connect to " + host
     finally:
         client.close()
 
@@ -70,15 +71,58 @@ def get_topology():
 
     return hostnames
 
-def check_link_status():
-    _json_all_port = run_command("net show interface json")
+def check_link_status(host):
+    _json_all_port = ssh_command(host, "net show interface json")
     _correct = True
     for _port in _json_all_port:
         _correct = _correct and (_port["linkstate"] == 'UP')
     return _correct
 
 def check_mtu():
-    pass
+    host_dict = dict()
+    hostnames = get_topology()
+    for host in hostnames:
+        host_dict[host] = {"interfaces": dict()}
+
+    for host in host_dict.keys():
+        for interface in get_lldp_neighbors(host)["lldp"][0]["interface"]:
+            # print "local host: " + host
+            # print "local port: " + interface["name"]
+            # print "remote host: " + interface["chassis"][0]["name"][0]["value"]
+            # print "remote port: " + interface["port"][0]["id"][0]["value"]
+            # exit(1)
+            """
+            host_dict["leaf01"] =
+                {"interfaces":
+                    {"swp51":
+                        {"spine01": "swp1"}
+                    },
+                    {"swp52":
+                        {"spine02": "swp2}
+                    }
+                }
+            """
+            host_dict[host]["interfaces"].update(
+                {interface["name"]:
+                    {interface["chassis"][0]["name"][0]["value"]:
+                        interface["port"][0]["id"][0]["value"]}})
+
+    for host in host_dict:
+        for interface in host_dict[host]["interfaces"]:
+            my_mtu = ssh_command(host, "net show interface " + interface + " json")["iface_obj"]["mtu"]
+            peer = host_dict[host]["interfaces"][interface]
+            remote_host = peer.keys()[0]
+            remote_port = host_dict[host]["interfaces"][interface][remote_host]
+            remote_mtu = ssh_command(remote_host, "net show interface " + remote_port + " json")["iface_obj"]["mtu"]
+
+            if not remote_mtu == my_mtu:
+                print "MTU mismatch on " + host + ":" + interface + \
+                    "(" + str(my_mtu) + ") and " + remote_host + \
+                      ":" + remote_port + "(" + str(remote_mtu) + ")"
+                return False
+
+    print "MTU check passed"
+    return True
 
 def check_lldp():
     pass
@@ -102,7 +146,4 @@ def check_expected_spf():
 def check_ospf_calc():
     pass
 
-
-hostnames = get_topology()
-for host in hostnames:
-    check_link_status()
+print check_mtu()
