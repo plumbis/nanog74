@@ -1,0 +1,10 @@
+---
+
+- name: Copy interfaces configuration
+  template:
+    src: break_mtu.j2
+    dest: /etc/network/interfaces.mtu
+    backup: yes
+  # notify: reload networking
+  tags:
+    - interfaces
