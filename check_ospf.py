@@ -12,14 +12,12 @@ def print_error(error_string):
     print error_format + bold_format + error_string + endc
     exit(1)
 
-
 def print_green(output_string):
     """Print a string in green
     """
     green_format = "\033[92m"
     endc = '\033[0m'
     print green_format + output_string + endc
-
 
 def ssh_command(host, command):
     """SSH to a host and run a command. Returns json command output
@@ -156,7 +154,6 @@ def check_ospf_state():
                 for neighbor_data in neighbors:
                     if interface_name in neighbor_data['ifaceName']:
                         print "Interface %s OSPF state is %s" % (interface_name, neighbor_data['state'])
-
 
 def check_network_type(hostname):
     ifc_info = ssh_command(hostname, "net show ospf interface json")
