@@ -78,6 +78,8 @@ def check_link_status():
     _correct = True
     for _port in _json_all_port:
         _correct = _correct and (_json_all_port[_port]['linkstate'] == 'UP')
+        if _json_all_port[_port]['linkstate'] != 'UP':
+            print("")
     return _correct
 
 def check_mtu():
