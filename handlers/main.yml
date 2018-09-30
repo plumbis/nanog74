@@ -22,3 +22,6 @@
   async: 0
   poll: 0
   ignore_errors: true
+
+- name: break mtu
+  command: /tmp/break_mtu.sh
