@@ -183,9 +183,11 @@ for host in hostnames:
     print "Checking interface status..."
     if not check_link_status(host):
         all_passed = False
+    print ""
     print "Checking OSPF network type..."
     if not check_network_type(host):
         all_passed = False
+    print ""
 
 if not check_mtu(host_dict):
     all_passed = False
