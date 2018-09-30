@@ -97,7 +97,7 @@ def check_link_status(hostname):
         _correct = _correct and (_json_all_port[_remote_port]['linkstate'] == 'UP')
         if _json_all_port[_remote_port]['linkstate'] != 'UP':
             print_error("Link failed on " + hostname +
-                  + "with remote port : " + _remote_port + "\n")
+                        " with remote port : " + _remote_port + "\n")
     if _correct:
         print_green("...Link status passed")
     return _correct
@@ -170,6 +170,10 @@ def check_network_type(hostname):
                     else:
                         print_green("...OSPF network type checking passed")
                         return True
+
+def check_ospf_routerid():
+    pass
+
 
 all_passed = True
 host_dict = dict()
