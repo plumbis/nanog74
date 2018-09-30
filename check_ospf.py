@@ -178,7 +178,7 @@ def check_ospf_routerid(hostnames):
     _correct = True;
     for host in hostnames:
         _ospf_info = ssh_command(host, _command)
-        _ospf_id = _ospf_info['routerID']
+        _ospf_id = _ospf_info['routerId']
         if _ospf_id not in _unique_id :
             _unique_id[_ospf_id] = [host]
         else:
