@@ -17,7 +17,8 @@ def print_green(output_string):
     """Print a string in green
     """
     green_format = "\033[92m"
-    print green_format + output_string
+    endc = '\033[0m'
+    print green_format + output_string + endc
 
 
 def ssh_command(host, command):
@@ -94,8 +95,11 @@ def check_link_status(hostname):
     """
     _json_all_port = ssh_command(hostname, "net show interface json")
     _correct = True
-    for _port in _json_all_port:
-        _correct = _correct and (_json_all_port[_port]['linkstate'] == 'UP')
+    for _remote_port in _json_all_port:
+        _correct = _correct and (_json_all_port[_remote_port]['linkstate'] == 'UP')
+        if _json_all_port[_remote_port]['linkstate'] != 'UP':
+            print("Link failed on " + hostname +
+                  + "with remote port : " + _remote_port + "\n")
     return _correct
 
 def check_mtu(host_dict):
@@ -152,8 +156,9 @@ def check_ospf_state():
                         print "Interface %s OSPF state is %s" % (interface_name, neighbor_data['state'])
 
 
-def check_network_type():
-    ifc_info = run_command("net show ospf interface json")
+def check_network_type(hostname):
+    print "Checking OSPF network type..."
+    ifc_info = ssh_command(hostname, "net show ospf interface json")
 
     for (k, v) in ifc_info.items():
         for (ifc, ifc_v) in v.items():
@@ -161,18 +166,26 @@ def check_network_type():
                 if(ifc != "lo" and attr == "networkType"):
                     print("ifc: "+ ifc + " Key: " + attr +  " Value:" + str(attr_v))
                     if(attr_v != "POINTOPOINT"):
-                        print("False")
+                        print_error("...failed")
+                        print_error(hostname + ":" + v + " configured as " + attr_v)
+                        return False
                     else:
-                        print ("True")
-    pass
+                        print_green("...OSPF network type checking passed")
+                        return True
 
-
+all_passed = True
 host_dict = dict()
 hostnames = get_topology()
 for host in hostnames:
     host_dict[host] = {"interfaces": dict()}
-    check_link_status(host)
+    if not check_link_status(host):
+        all_passed = False
+    if not check_network_type(host):
+        all_passed = False
 
-check_mtu(host_dict)
+if not check_mtu(host_dict):
+    all_passed = False
 
-print_green("All Checks Pass")
+print ""
+if all_passed:
+    print_green("All Checks Pass")
