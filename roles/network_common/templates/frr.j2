@@ -17,7 +17,7 @@ interface {{ interface }}
 {% endfor %}
 !
 router ospf
- ospf router-id {{ node[inventory_hostname]["interfaces"]["lo"]}}
+ ospf router-id {{ node[inventory_hostname]["interfaces"]["lo"]|replace("/32", "")}}
  passive-interface default
  {% for interface in node[inventory_hostname]["ospf"] %}
  no passive-interface {{ interface }}
