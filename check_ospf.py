@@ -170,8 +170,32 @@ def check_network_type(hostname):
                         print_green("...OSPF network type checking passed")
                         return True
 
-def check_ospf_routerid():
-    pass
+def check_ospf_routerid(hostnames):
+    """ Using the topology host list to check if they have same id
+    """
+    _unique_id = {}
+    _command = "net show ospf json"
+    _correct = True;
+    for host in hostnames:
+        _ospf_info = ssh_command(host, _command)
+        _ospf_id = _ospf_info['routerId']
+        if _ospf_id not in _unique_id :
+            _unique_id[_ospf_id] = [host]
+        else:
+            _unique_id[_ospf_id].append(host)
+
+    for id in _unique_id:
+        if len(_unique_id[id]) > 1:
+            _correct = False
+            print_error("Repetitive Unique ID : " + id + " with host name : " )
+            for id_host in _unique_id[id]:
+                print_error(id_host)
+    if not _correct:
+        print_error("Router ID check failed")
+    return _correct
+
+
+
 
 
 all_passed = True
@@ -188,6 +212,8 @@ for host in hostnames:
         all_passed = False
     print ""
 
+if not check_ospf_routerid(hostnames):
+    all_passed = False
 if not check_mtu(host_dict):
     all_passed = False
 
